@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introdução a AI Coding Tools — Versão Executiva</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --bg-2: #111935;
+    --panel: #161e3d;
+    --ink: #e8ecf8;
+    --ink-soft: #b9c2e0;
+    --muted: #8892b8;
+    --accent: #7c5cff;
+    --accent-2: #22d3ee;
+    --good: #34d399;
+    --bad: #f87171;
+    --warn: #fbbf24;
+    --border: #243059;
+    --code-bg: #0f1530;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%; width: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
+  }
+
+  /* Background gradient */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(1200px 800px at 80% -10%, rgba(124,92,255,0.18), transparent 60%),
+      radial-gradient(900px 700px at -10% 110%, rgba(34,211,238,0.12), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .deck {
+    position: relative;
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    padding: 5vh 7vw;
+    flex-direction: column;
+    justify-content: center;
+    animation: fadeIn 0.45s ease;
+  }
+  .slide.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Typography */
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin: 0 0 1.5rem;
+    background: linear-gradient(120deg, var(--ink) 0%, var(--accent-2) 70%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+    margin: 0 0 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  h2 .acc { color: var(--accent-2); }
+  h3 {
+    font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+    margin: 0 0 1rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  p, li, td, th { font-size: clamp(1rem, 1.4vw, 1.25rem); line-height: 1.55; }
+  ul { margin: 0; padding-left: 1.4rem; }
+  li { margin: 0.45rem 0; color: var(--ink-soft); }
+  li b, li strong { color: var(--ink); }
+  strong { color: var(--ink); }
+
+  /* Title slide */
+  .title-slide {
+    text-align: left;
+  }
+  .title-slide .eyebrow {
+    color: var(--accent-2);
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  .title-slide h1 {
+    font-size: clamp(3rem, 7vw, 6rem);
+  }
+  .title-slide .subtitle {
+    font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+    color: var(--ink-soft);
+    margin: 0.5rem 0 2rem;
+    font-weight: 500;
+  }
+  .title-slide .focus {
+    display: inline-block;
+    padding: 0.8rem 1.4rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgba(124,92,255,0.08);
+    color: var(--ink);
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+  }
+  .title-slide .meta {
+    margin-top: 3rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  /* Section dividers */
+  .section-slide {
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .section-slide .badge {
+    color: var(--accent);
+    font-size: 1.4rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .section-slide h1 {
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    margin: 0;
+  }
+  .section-slide .underline {
+    width: 120px; height: 6px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    border-radius: 999px;
+    margin-top: 2rem;
+  }
+
+  /* Quote */
+  blockquote {
+    margin: 0;
+    padding: 1.4rem 1.8rem;
+    border-left: 4px solid var(--accent);
+    background: rgba(124,92,255,0.07);
+    border-radius: 0 12px 12px 0;
+    font-style: italic;
+    font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  blockquote .cite {
+    display: block;
+    margin-top: 0.8rem;
+    font-style: normal;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.8rem;
+    background: var(--panel);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  th, td {
+    padding: 0.9rem 1.1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: rgba(124,92,255,0.12);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  td { color: var(--ink-soft); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    overflow: auto;
+    color: var(--accent-2);
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+    line-height: 1.55;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+  }
+  code {
+    background: rgba(124,92,255,0.15);
+    color: var(--accent-2);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.92em;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Two-column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .col-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem;
+  }
+  .col-card.good { border-left: 4px solid var(--good); }
+  .col-card.bad  { border-left: 4px solid var(--bad); }
+
+  /* Lists with icons */
+  .icon-list { list-style: none; padding: 0; }
+  .icon-list li {
+    padding: 0.5rem 0 0.5rem 2rem;
+    position: relative;
+    color: var(--ink-soft);
+  }
+  .icon-list li::before {
+    position: absolute; left: 0; top: 0.45rem;
+    font-size: 1.1rem;
+  }
+  .icon-list.bad li::before { content: '✕'; color: var(--bad); font-weight: bold; }
+  .icon-list.good li::before { content: '✓'; color: var(--good); font-weight: bold; }
+  .icon-list.warn li::before { content: '⚠'; color: var(--warn); }
+
+  /* Cards */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem 1.5rem;
+    margin: 0.6rem 0;
+  }
+
+  /* Big-quote */
+  .big-quote {
+    text-align: center;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--ink);
+    padding: 1.5rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(124,92,255,0.10), rgba(34,211,238,0.06));
+  }
+  .big-quote .accent { color: var(--accent-2); }
+
+  /* Numbered steps */
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+    margin: 0;
+  }
+  .steps li {
+    counter-increment: step;
+    padding: 0.7rem 0 0.7rem 3rem;
+    position: relative;
+    color: var(--ink-soft);
+    border-bottom: 1px dashed var(--border);
+  }
+  .steps li:last-child { border-bottom: none; }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0.65rem;
+    width: 2rem; height: 2rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  /* Slide footer / nav */
+  .slide-footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.8rem 1.6rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    z-index: 10;
+    pointer-events: none;
+  }
+  .slide-footer .left, .slide-footer .right { pointer-events: auto; }
+  .slide-footer .nav-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--ink-soft);
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin: 0 0.2rem;
+    transition: all 0.2s;
+  }
+  .slide-footer .nav-btn:hover {
+    background: rgba(124,92,255,0.2);
+    color: var(--ink);
+    border-color: var(--accent);
+  }
+
+  .progress {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    z-index: 11;
+  }
+  .progress .bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width 0.35s ease;
+    width: 0%;
+  }
+
+  .counter {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+  }
+
+  /* Decision tree pre styling */
+  pre.tree {
+    background: linear-gradient(135deg, rgba(124,92,255,0.08), rgba(34,211,238,0.04));
+    color: var(--ink);
+    border-color: var(--accent);
+  }
+
+  /* Highlight callout */
+  .callout {
+    background: linear-gradient(135deg, rgba(34,211,238,0.10), rgba(124,92,255,0.06));
+    border: 1px solid var(--accent-2);
+    padding: 1rem 1.4rem;
+    border-radius: 12px;
+    color: var(--ink);
+    margin-top: 1rem;
+    font-weight: 500;
+  }
+
+  /* Responsive small */
+  @media (max-width: 800px) {
+    .two-col { grid-template-columns: 1fr; }
+    .slide { padding: 4vh 5vw; }
+  }
+
+  /* Hide scroll on pre on hover */
+  pre::-webkit-scrollbar { height: 8px; width: 8px; }
+  pre::-webkit-scrollbar-track { background: transparent; }
+  pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* Print */
+  @media print {
+    body { background: white; color: black; }
+    .slide { display: flex !important; page-break-after: always; height: 100vh; }
+    .slide-footer, .progress { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="bar" id="progressBar"></div></div>
+
+<div class="deck" id="deck">
+
+  <!-- 1. Title -->
+  <section class="slide title-slide active">
+    <h1>Introdução a<br>AI Coding Tools</h1>
+    <div class="meta">Fabricio Galvani e Luan Rodrigues · 2026</div>
+  </section>
+
+  <!-- 2. Agenda -->
+  <section class="slide">
+    <h2>Agenda</h2>
+    <ol class="steps" style="margin-top:1rem;">
+      <li><strong>Fundamentos</strong> — 5 min</li>
+      <li><strong>Context Engineering ⭐</strong> — 10 min</li>
+      <li><strong>Long-term Memory ⭐</strong> — 8 min</li>
+      <li><strong>Anti-Patterns</strong> — 5 min</li>
+      <li><strong>Q&A</strong> — 2 min</li>
+    </ol>
+  </section>
+
+  <!-- 3. Section 1 -->
+  <section class="slide section-slide">
+    <div class="badge">Bloco 01</div>
+    <h1>Fundamentos</h1>
+    <div class="underline"></div>
+  </section>
+
+  <!-- 4. O que é (e o que NÃO é) IA -->
+  <section class="slide">
+    <h2>O que é (e o que <span class="acc">NÃO</span> é) IA</h2>
+    <blockquote>
+      "AI não é nem inteligente nem artificial — é engenharia de software em cima de cálculo probabilístico"
+    </blockquote>
+    <ul style="margin-top:1.5rem;">
+      <li><strong>LLM é stateless</strong> — Transformer probabilístico que recebe tokens, devolve o próximo</li>
+      <li><strong>Memória é da ferramenta</strong>, não da LLM</li>
+      <li><strong>Token</strong> = unidade de cobrança (preço por milhão)</li>
+    </ul>
+  </section>
+
+  <!-- 5. Mudança de perfil -->
+  <section class="slide">
+    <h2>Mudança de perfil do dev</h2>
+    <table>
+      <thead><tr><th>Antes</th><th>Agora</th></tr></thead>
+      <tbody>
+        <tr><td>Codificador braçal</td><td>Analista de negócio + arquiteto</td></tr>
+        <tr><td>Lê código linha-a-linha</td><td>Escreve specs e revisa com IA</td></tr>
+        <tr><td>Decide tudo manualmente</td><td>Orquestra agentes</td></tr>
+      </tbody>
+    </table>
+    <div class="callout" style="margin-top:1.5rem;">
+      "IA é o anabolizante da programação" — <em>Branas</em>
+    </div>
+  </section>
+
+  <!-- 6. Section 2 -->
+  <section class="slide section-slide">
+    <div class="badge">Bloco 02 ⭐</div>
+    <h1>Context<br>Engineering</h1>
+    <div class="underline"></div>
+  </section>
+
+  <!-- 7. Por que importa -->
+  <section class="slide">
+    <h2>Por que isso importa</h2>
+    <p style="font-size:1.3rem;">A janela de contexto é o <strong>único canal</strong> por onde a LLM enxerga seu problema.</p>
+    <p>Cada token mal investido = <strong>menos espaço para a inteligência da LLM raciocinar</strong> + mais idas-e-vindas que custam tempo e dinheiro.</p>
+    <div class="callout">
+      <strong>Não é sobre escolher o LLM mais caro.</strong> É sobre orquestrar com precisão <em>o que entra, quando entra e quando sai</em> da janela.
+    </div>
+  </section>
+
+  <!-- 8. Janela de Contexto -->
+  <section class="slide">
+    <h2>Janela de Contexto</h2>
+    <svg viewBox="0 0 820 265" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:210px;display:block;margin:0.4rem 0 0.3rem;">
+      <defs>
+        <marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#8892b8"/></marker>
+        <marker id="ah-y" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#fbbf24"/></marker>
+        <marker id="ah-g" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#34d399"/></marker>
+        <marker id="ah-c" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#22d3ee"/></marker>
+      </defs>
+      <!-- File System -->
+      <rect x="545" y="4" width="105" height="40" rx="8" fill="#161e3d" stroke="#243059" stroke-width="1.5"/>
+      <text x="597" y="28" text-anchor="middle" fill="#b9c2e0" font-size="13" font-family="Inter,sans-serif">File System</text>
+      <!-- Web -->
+      <rect x="665" y="4" width="80" height="40" rx="8" fill="#161e3d" stroke="#243059" stroke-width="1.5"/>
+      <text x="705" y="28" text-anchor="middle" fill="#b9c2e0" font-size="13" font-family="Inter,sans-serif">Web</text>
+      <!-- FS/Web → Tools -->
+      <line x1="597" y1="44" x2="642" y2="78" stroke="#8892b8" stroke-width="1.2" marker-end="url(#ah)"/>
+      <text x="603" y="67" fill="#8892b8" font-size="10" font-family="Inter,sans-serif">read_file</text>
+      <line x1="705" y1="44" x2="682" y2="78" stroke="#8892b8" stroke-width="1.2" marker-end="url(#ah)"/>
+      <text x="706" y="65" fill="#8892b8" font-size="10" font-family="Inter,sans-serif">web_search</text>
+      <!-- Tools Impl -->
+      <rect x="600" y="78" width="160" height="52" rx="10" fill="#161e3d" stroke="#7c5cff" stroke-width="1.8"/>
+      <text x="680" y="100" text-anchor="middle" fill="#e8ecf8" font-size="13" font-weight="bold" font-family="Inter,sans-serif">Implementação</text>
+      <text x="680" y="118" text-anchor="middle" fill="#8892b8" font-size="12" font-family="Inter,sans-serif">das Tools</text>
+      <!-- LLM box -->
+      <rect x="410" y="78" width="140" height="52" rx="10" fill="#161e3d" stroke="#22d3ee" stroke-width="2"/>
+      <text x="480" y="100" text-anchor="middle" fill="#22d3ee" font-size="15" font-weight="bold" font-family="Inter,sans-serif">LLM</text>
+      <text x="480" y="118" text-anchor="middle" fill="#8892b8" font-size="12" font-family="Inter,sans-serif">(stateless)</text>
+      <!-- LLM ↔ Tools -->
+      <line x1="550" y1="97" x2="598" y2="97" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#ah-y)"/>
+      <text x="574" y="91" text-anchor="middle" fill="#fbbf24" font-size="10" font-family="Inter,sans-serif">tool call</text>
+      <line x1="598" y1="112" x2="550" y2="112" stroke="#34d399" stroke-width="1.5" marker-end="url(#ah-g)"/>
+      <text x="574" y="126" text-anchor="middle" fill="#34d399" font-size="10" font-family="Inter,sans-serif">tool return</text>
+      <!-- User box -->
+      <rect x="5" y="170" width="65" height="48" rx="8" fill="#161e3d" stroke="#243059" stroke-width="1.5"/>
+      <text x="37" y="199" text-anchor="middle" fill="#b9c2e0" font-size="14" font-family="Inter,sans-serif">User</text>
+      <!-- User → Context -->
+      <line x1="70" y1="194" x2="86" y2="194" stroke="#8892b8" stroke-width="1.5" marker-end="url(#ah)"/>
+      <text x="78" y="188" text-anchor="middle" fill="#8892b8" font-size="10" font-family="Inter,sans-serif">prompt</text>
+      <!-- Context Window box -->
+      <rect x="86" y="162" width="310" height="70" rx="10" fill="#0f1530" stroke="#243059" stroke-width="1.5"/>
+      <!-- Blocks: w=34, gap=2, y=170, h=54 -->
+      <rect x="93" y="170" width="34" height="54" rx="4" fill="rgba(248,113,113,0.25)"/>
+      <text x="110" y="200" text-anchor="middle" fill="#f87171" font-size="9" transform="rotate(-90,110,200)" font-family="Inter,sans-serif">system</text>
+      <rect x="129" y="170" width="34" height="54" rx="4" fill="rgba(248,113,113,0.15)"/>
+      <text x="146" y="200" text-anchor="middle" fill="#f87171" font-size="9" transform="rotate(-90,146,200)" font-family="Inter,sans-serif">tools</text>
+      <rect x="165" y="170" width="34" height="54" rx="4" fill="rgba(124,92,255,0.4)"/>
+      <text x="182" y="200" text-anchor="middle" fill="#a78bfa" font-size="9" transform="rotate(-90,182,200)" font-family="Inter,sans-serif">user</text>
+      <rect x="201" y="170" width="34" height="54" rx="4" fill="rgba(251,191,36,0.3)"/>
+      <text x="218" y="200" text-anchor="middle" fill="#fbbf24" font-size="9" transform="rotate(-90,218,200)" font-family="Inter,sans-serif">tc</text>
+      <rect x="237" y="170" width="34" height="54" rx="4" fill="rgba(52,211,153,0.3)"/>
+      <text x="254" y="200" text-anchor="middle" fill="#34d399" font-size="9" transform="rotate(-90,254,200)" font-family="Inter,sans-serif">tr</text>
+      <rect x="273" y="170" width="34" height="54" rx="4" fill="rgba(251,191,36,0.3)"/>
+      <text x="290" y="200" text-anchor="middle" fill="#fbbf24" font-size="9" transform="rotate(-90,290,200)" font-family="Inter,sans-serif">tc</text>
+      <rect x="309" y="170" width="34" height="54" rx="4" fill="rgba(52,211,153,0.3)"/>
+      <text x="326" y="200" text-anchor="middle" fill="#34d399" font-size="9" transform="rotate(-90,326,200)" font-family="Inter,sans-serif">tr</text>
+      <rect x="345" y="170" width="34" height="54" rx="4" fill="rgba(34,211,238,0.2)"/>
+      <text x="362" y="200" text-anchor="middle" fill="#22d3ee" font-size="9" transform="rotate(-90,362,200)" font-family="Inter,sans-serif">answer</text>
+      <!-- CW → LLM (request) -->
+      <line x1="235" y1="162" x2="443" y2="131" stroke="#8892b8" stroke-width="1.5" marker-end="url(#ah)"/>
+      <text x="315" y="138" text-anchor="middle" fill="#8892b8" font-size="10" font-family="Inter,sans-serif">request →</text>
+      <!-- LLM → CW (answer) -->
+      <line x1="462" y1="131" x2="272" y2="162" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#ah-c)"/>
+      <text x="392" y="158" text-anchor="middle" fill="#22d3ee" font-size="10" font-family="Inter,sans-serif">← answer</text>
+      <!-- Tools → CW (tool result) curved -->
+      <path d="M 695 130 C 695 185, 480 225, 398 205" stroke="#34d399" fill="none" stroke-width="1.5" marker-end="url(#ah-g)"/>
+      <text x="585" y="198" text-anchor="middle" fill="#34d399" font-size="10" font-family="Inter,sans-serif">tool result</text>
+      <!-- Labels -->
+      <text x="241" y="246" text-anchor="middle" fill="#f87171" font-size="11" font-family="Inter,sans-serif">← short-term memory →</text>
+      <text x="241" y="261" text-anchor="middle" fill="#8892b8" font-size="10.5" font-family="Inter,sans-serif">Opus 4.7: 1M · GPT-5.4: 1M · Gemini 3.1 Pro: 1M</text>
+    </svg>
+    <ul style="margin-top:0.2rem;">
+      <li><strong>4 Roles:</strong> <code>system</code> · <code>user</code> · <code>assistant</code> · <code>tool</code> — array reenviado <em>inteiro</em> a cada request</li>
+      <li><strong>Compactação:</strong> quando enche, ferramenta resume → <strong>degrada e alucina</strong></li>
+      <li><strong>Short-term memory:</strong> vive na janela; some com <code>/clear</code></li>
+    </ul>
+  </section>
+
+  <!-- 9. Tool Call -->
+  <section class="slide">
+    <h2>Tool Call (RPC puro)</h2>
+    <pre class="tree">Usuário → Ferramenta → LLM
+              ↑          ↓
+              └─ executa ┘
+              (a LLM NÃO executa)</pre>
+    <ul style="margin-top:1.2rem;">
+      <li>LLM devolve <strong>JSON</strong> pedindo execução</li>
+      <li><strong>Host</strong> executa (Claude Code, Cursor, etc.)</li>
+      <li>Resultado volta como nova mensagem (<code>tool</code> role)</li>
+    </ul>
+  </section>
+
+  <!-- 10. Anatomia de um fix -->
+  <section class="slide">
+    <h2>Anatomia de um fix</h2>
+    <ol class="steps">
+      <li><code>system</code> + tools + <code>user: "corrija arquivo X"</code></li>
+      <li>LLM → <code>tool_call: list_directory</code></li>
+      <li>Host executa → <code>tool_result</code></li>
+      <li>LLM → <code>tool_call: read_file</code></li>
+      <li>Host executa → <code>tool_result</code></li>
+      <li>LLM → <code>tool_call: edit_file</code></li>
+      <li>Host executa → <code>tool_result</code></li>
+      <li>LLM → <code>assistant: "corrigido"</code></li>
+    </ol>
+    <div class="callout"><strong>Cada passo reenvia o array INTEIRO.</strong> Por isso a janela infla.</div>
+  </section>
+
+  <!-- 11. Modelos -->
+  <section class="slide">
+    <h2>Modelos (Janeiro 2026)</h2>
+    <table>
+      <thead><tr><th>Modelo</th><th>Janela</th><th>Forte em</th></tr></thead>
+      <tbody>
+        <tr><td><strong>GPT-5.4 Codex</strong></td><td>1M</td><td>Bugs complexos</td></tr>
+        <tr><td><strong>Opus 4.7</strong></td><td>1M</td><td>Generalista day-to-day</td></tr>
+        <tr><td><strong>Gemini 3.1 Pro</strong></td><td>1M</td><td>Front-end, docs grandes</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 12. Tipos de ferramenta -->
+  <section class="slide">
+    <h2>Tipos de ferramenta</h2>
+    <table>
+      <thead><tr><th>Tipo</th><th>Exemplos</th></tr></thead>
+      <tbody>
+        <tr><td><strong>IDE-first</strong></td><td>Cursor, Windsurf, Kiro (AWS)</td></tr>
+        <tr><td><strong>Plugin</strong></td><td>Copilot</td></tr>
+        <tr><td><strong>CLI Agent</strong></td><td>Claude Code, Codex CLI, OpenCode, Gemini CLI, Droid</td></tr>
+        <tr><td><strong>Async/Cloud</strong></td><td>Antigravity</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 13. Section 3 -->
+  <section class="slide section-slide">
+    <div class="badge">Bloco 03 ⭐</div>
+    <h1>Long-term<br>Memory</h1>
+    <div class="underline"></div>
+  </section>
+
+  <!-- 14. Regra de Ouro -->
+  <section class="slide">
+    <h2>A Regra de Ouro</h2>
+    <div class="big-quote" style="margin-top:1.5rem;">
+      Se é <span class="accent">sempre</span> → Rule<br>
+      Se é <span class="accent">às vezes</span> → Skill<br>
+      Se é <span class="accent">dado externo</span> → MCP
+    </div>
+  </section>
+
+  <!-- 15. Rules -->
+  <section class="slide">
+    <h2>Rules <span class="acc">(Sempre Carregadas)</span></h2>
+    <p>Arquivo Markdown injetado no system prompt em <strong>toda conversa</strong>.</p>
+    <table>
+      <thead><tr><th>Ferramenta</th><th>Arquivo</th></tr></thead>
+      <tbody>
+        <tr><td>Claude Code</td><td><code>CLAUDE.md</code></td></tr>
+        <tr><td>Codex</td><td><code>AGENTS.md</code></td></tr>
+        <tr><td>Gemini</td><td><code>GEMINI.md</code></td></tr>
+        <tr><td>Copilot</td><td><code>.github/copilot-instructions.md</code></td></tr>
+        <tr><td>Cursor</td><td><code>.cursor/rules/*.mdc</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 16. Rules — Cuidados -->
+  <section class="slide">
+    <h2>Rules — Cuidados</h2>
+    <div class="two-col">
+      <div class="col-card good">
+        <h3 style="color:var(--good);">✓ Colocar</h3>
+        <ul class="icon-list good">
+          <li>Convenções (camelCase, kebab-case)</li>
+          <li>Estrutura de pastas</li>
+          <li>Libs realmente usadas</li>
+        </ul>
+      </div>
+      <div class="col-card bad">
+        <h3 style="color:var(--bad);">✕ NÃO colocar</h3>
+        <ul class="icon-list bad">
+          <li>Tecnologias que o projeto não usa</li>
+          <li>Regras de negócio condicionais</li>
+          <li>Texto gerado por LLM sem revisar (10k+ tokens fácil)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17. Skills -->
+  <section class="slide">
+    <h2>Skills <span class="acc">(On-Demand)</span></h2>
+    <pre>.claude/skills/react-best-practices/
+  SKILL.md       ← header (name + description) vai pro contexto
+  references/
+  templates/
+  scripts/</pre>
+    <ul style="margin-top:1rem;">
+      <li>Criadas pela Anthropic em <strong>25/nov/2025</strong></li>
+      <li>Marketplace: <strong>skills.sh</strong> (~34k) e <strong>skillsmcp.com</strong></li>
+      <li><strong>Problema:</strong> LLM frequentemente ignora skills</li>
+      <li><strong>Solução:</strong> reforce via Rule (<em>"sempre que X, use skill Y"</em>)</li>
+    </ul>
+  </section>
+
+  <!-- 18. MCP -->
+  <section class="slide">
+    <h2>MCP <span class="acc">(Model Context Protocol)</span></h2>
+    <pre>Host → Client → Server → Recurso externo
+(Cursor)        (stdio ou URL)</pre>
+    <table style="margin-top:1rem;">
+      <thead><tr><th>MCP popular</th><th>Uso</th></tr></thead>
+      <tbody>
+        <tr><td>Context7</td><td>Docs de libs</td></tr>
+        <tr><td>GitHub</td><td>PRs, issues</td></tr>
+        <tr><td>Terraform</td><td>Provisionamento de infra</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 19. MCP é caro -->
+  <section class="slide">
+    <h2>⚠️ MCP é caro</h2>
+    <ul class="icon-list warn">
+      <li>Cada MCP injeta <strong>TODAS</strong> suas tools no início da janela</li>
+      <li>GitHub MCP consumia <strong>~26k tokens</strong> só pra existir</li>
+      <li><strong>Tool Search Tool</strong> (Anthropic, 24/nov/2025) reduziu para <strong>~8.7k</strong></li>
+      <li><strong>Audite MCPs:</strong> desligue o que não usou na semana</li>
+    </ul>
+  </section>
+
+  <!-- 20. Árvore de decisão -->
+  <section class="slide">
+    <h2>Árvore de decisão</h2>
+    <pre class="tree">Preciso adicionar conhecimento/capacidade?
+│
+├── Dado externo dinâmico?  ──→ MCP
+├── Vale para TODA tarefa?  ──→ Rule
+├── Processo c/ templates?  ──→ Skill
+└── Senão                   ──→ Prompt da tarefa</pre>
+  </section>
+
+  <!-- 21. Section 4 -->
+  <section class="slide section-slide">
+    <div class="badge">Bloco 04</div>
+    <h1>Anti-patterns</h1>
+    <div class="underline"></div>
+  </section>
+
+  <!-- 22. Anti-patterns de Context -->
+  <section class="slide">
+    <h2>Anti-patterns de <span class="acc">Context</span></h2>
+    <ul class="icon-list bad">
+      <li><strong>Prompt evasivo</strong> ("tem um bug, corrige") → LLM inicia <em>exploração</em> do codebase via tool calls (<code>list_dir</code> → <code>read_file</code> × N → <code>grep</code>) antes de agir — cada round-trip reenvia o array inteiro, queimando tokens na investigação que você poderia ter feito com um grep de 2s</li>
+      <li><strong>Mesma janela pra múltiplas tarefas</strong> → compactação cedo, alucinação</li>
+      <li><strong>Arquivo > 5k linhas inteiro</strong> → janela explode</li>
+      <li><strong>"Bom dia", "obrigado"</strong> → tokens reais persistindo</li>
+    </ul>
+  </section>
+
+  <!-- 23. Anti-patterns Long-term -->
+  <section class="slide">
+    <h2>Anti-patterns de <span class="acc">Long-term Memory</span></h2>
+    <ul class="icon-list bad">
+      <li>Copiar rules da internet sem checar o projeto</li>
+      <li>Regras de negócio no <code>CLAUDE.md</code> num ERP de 25 módulos</li>
+      <li>Encher de MCPs que você não usa</li>
+      <li>Rules geradas por LLM coladas sem revisar</li>
+      <li>Referenciar <strong>path</strong> da skill em vez do <strong>nome</strong></li>
+    </ul>
+  </section>
+
+  <!-- 24. Anti-patterns de Postura -->
+  <section class="slide">
+    <h2>Anti-patterns de <span class="acc">Postura</span></h2>
+    <ul class="icon-list bad">
+      <li><strong>Aprovar cada tool call manualmente</strong></li>
+    </ul>
+    <blockquote style="margin:0.5rem 0 1rem;">"Contratar alguém e interromper a cada passo para perguntar se pode continuar"</blockquote>
+    <ul class="icon-list bad">
+      <li><strong>Subestimar a análise de requisitos</strong> — o tempo economizado na execução deve ser reinvestido em entender o problema, detalhar a task e validar o output</li>
+      <li><strong>Acreditar em "problema resolvido"</strong> sem rodar o teste</li>
+      <li><strong>LLM local como substituto de API</strong> → TPS baixo e, mais importante, não possui a quantidade de parâmetros dos modelos de mercado — capacidade de raciocínio e qualidade de output são incomparáveis</li>
+    </ul>
+  </section>
+
+  <!-- 25. Section 5 -->
+  <section class="slide section-slide">
+    <div class="badge">Bloco 05</div>
+    <h1>Para Onde<br>Vamos</h1>
+    <div class="underline"></div>
+  </section>
+
+  <!-- 26. Tendências -->
+  <section class="slide">
+    <h2>Tendências</h2>
+    <ol class="steps">
+      <li><strong>Tool Search Tool</strong> (~70k → 8.7k tokens iniciais)</li>
+      <li><strong>Skills + MCP on-demand</strong> (MCP só carrega quando skill é chamada)</li>
+      <li><strong>Multi-agent</strong> — system prompts diferentes por etapa</li>
+    </ol>
+  </section>
+
+  <!-- 27. A visão consensual -->
+  <section class="slide">
+    <h2>A visão consensual</h2>
+    <blockquote>
+      "A LLM bateu no teto. O avanço agora vem do <strong>ferramental</strong> (harness, tools, agentes, skills), não dos modelos."
+      <span class="cite">— Branas, Pedro Nauk, Akita</span>
+    </blockquote>
+  </section>
+
+  <!-- 28. Resumo -->
+  <section class="slide">
+    <h2>Resumo em uma frase</h2>
+    <div class="big-quote">
+      <strong>Context Engineering</strong> é a arte de controlar o array de mensagens que entra na LLM a cada request — e <span class="accent">Rules + Skills + MCP</span> são como você reusa contexto sem queimar tokens.
+    </div>
+  </section>
+
+<!-- 30. Encerramento -->
+  <section class="slide title-slide">
+    <div class="eyebrow">Encerramento</div>
+    <h1>Obrigado!</h1>
+    <div class="card" style="margin-top:2rem; max-width:780px; text-align:left;">
+      <p style="margin:0 0 0.75rem; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.08em; color:#94a3b8;">Referências &amp; Links</p>
+      <ul style="margin:0; padding:0; list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:0.45rem 2rem; font-size:0.88rem;">
+        <li><a href="https://tiktokenizer.vercel.app/" target="_blank" style="color:#22d3ee;">Demo tokens — Tiktokenizer</a></li>
+        <li><a href="https://projector.tensorflow.org/" target="_blank" style="color:#22d3ee;">Demo tokens — Vector DB</a></li>
+        <li><a href="https://context7.com" target="_blank" style="color:#22d3ee;">Context7 MCP</a> · <a href="https://github.com/upstash/context7" target="_blank" style="color:#7c5cff;">GitHub</a></li>
+        <li><a href="https://www.youtube.com/@aiDotEngineer" target="_blank" style="color:#22d3ee;">Canal AI Engineer</a></li>
+        <li><a href="https://www.youtube.com/watch?v=oi8ddj3Dm04" target="_blank" style="color:#22d3ee;">Exemplo Workflow com AI</a></li>
+        <li><a href="https://www.youtube.com/watch?v=IJGfd2WTRvg&t=1292s" target="_blank" style="color:#22d3ee;">The Loop Explained — Ralph Wingum</a></li>
+        <li><a href="https://www.youtube.com/watch?v=CkDN9HbX2kc" target="_blank" style="color:#22d3ee;">Harness Explained</a></li>
+        <li><a href="https://www.youtube.com/watch?v=4c7pbOxYn_A" target="_blank" style="color:#22d3ee;">Podcast Akita</a></li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+
+<div class="slide-footer">
+  <div class="left">
+    <button class="nav-btn" onclick="prev()">← Anterior</button>
+    <button class="nav-btn" onclick="next()">Próximo →</button>
+    <button class="nav-btn" onclick="toggleFs()">⛶ Fullscreen</button>
+  </div>
+  <div class="right counter"><span id="curr">1</span> / <span id="total">30</span></div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let idx = 0;
+  document.getElementById('total').textContent = total;
+
+  function show(n) {
+    idx = Math.max(0, Math.min(total - 1, n));
+    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+    document.getElementById('curr').textContent = idx + 1;
+    document.getElementById('progressBar').style.width = ((idx + 1) / total * 100) + '%';
+    history.replaceState(null, '', '#' + (idx + 1));
+  }
+  function next() { show(idx + 1); }
+  function prev() { show(idx - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { next(); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { prev(); e.preventDefault(); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(total - 1); }
+    else if (e.key === 'f' || e.key === 'F') { toggleFs(); }
+  });
+
+  // Click left/right halves to navigate
+  document.getElementById('deck').addEventListener('click', (e) => {
+    const x = e.clientX;
+    const w = window.innerWidth;
+    if (x > w * 0.6) next();
+    else if (x < w * 0.4) prev();
+  });
+
+  function toggleFs() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+
+  // Init from hash
+  const h = parseInt(location.hash.replace('#', ''), 10);
+  if (!isNaN(h)) show(h - 1);
+  else show(0);
+</script>
+
+</body>
+</html>
