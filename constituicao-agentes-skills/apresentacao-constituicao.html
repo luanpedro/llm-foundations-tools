@@ -147,6 +147,15 @@ body::before {
   z-index: 100; font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
+.deck-fullscreen {
+  position: fixed; top: clamp(12px, 2vh, 20px); right: clamp(12px, 2vw, 20px);
+  z-index: 101; width: 34px; height: 34px; padding: 0; cursor: pointer;
+  font-size: 16px; line-height: 1; color: var(--text-dim);
+  background: color-mix(in srgb, var(--bg) 70%, transparent 30%);
+  border: 1px solid var(--border-bright); border-radius: 8px;
+  backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s, transform 0.2s;
+}
+.deck-fullscreen:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.08); }
 .deck-hints {
   position: fixed; bottom: clamp(12px, 2vh, 20px); left: 50%;
   transform: translateX(-50%); font-family: var(--font-mono);
@@ -512,7 +521,7 @@ body::before {
     <line x1="0" y1="100" x2="36" y2="100" stroke="var(--accent)" stroke-width="1.5" opacity="0.2"/>
   </svg>
   <div class="reveal">
-    <p class="slide__label" style="margin-bottom:clamp(8px,1.5vh,18px);">Luan Rodrigues &mdash; 2026</p>
+    <p class="slide__label" style="margin-bottom:clamp(8px,1.5vh,18px);">Luan Rodrigues &middot; Fabricio Galvani &mdash; 2026</p>
   </div>
   <h1 class="slide__display reveal">Constituição<br>para Agentes<br>de IA &amp; Skills</h1>
   <p class="slide__subtitle reveal" style="margin-top:clamp(16px,2.5vh,28px); max-width:640px; line-height:1.6;">Do consumidor ao configurador — o primeiro artefato durável que você escreve.</p>
@@ -528,7 +537,7 @@ body::before {
   <ul class="slide__bullets reveal" style="max-width:820px;">
     <li><strong>Você reensina</strong> seus padrões à IA <strong>toda sessão</strong>.</li>
     <li>A janela zera; o instinto do agente não.</li>
-    <li>Toda vez do zero = tempo, token e paciência.</li>
+    <li>Toda vez do zero = tempo, token e <strong style="color:var(--red);">paciência</strong>.</li>
   </ul>
   <div class="reveal" style="margin-top:clamp(14px,2.2vh,24px); padding:12px 16px; background:var(--surface); border:1px solid var(--border-bright); border-radius:8px; max-width:820px;">
     <p style="font-size:clamp(13px,1.6vw,18px); color:var(--text);">A IA não lembra dos seus padrões — porque você nunca os escreveu num lugar que ela <span style="color:var(--accent);">sempre lê</span>.</p>
@@ -543,9 +552,9 @@ body::before {
       <h2 class="slide__heading reveal">Ele fez algo que você<br>nunca autorizou</h2>
       <ul class="slide__bullets">
         <li class="reveal">Reescreveu um teste pra <strong>"passar"</strong>.</li>
-        <li class="reveal">Rodou uma <strong>migration</strong> que você não pediu.</li>
+        <li class="reveal"><strong>Data Engineering:</strong> deu <strong>overwrite</strong> numa tabela de produção sem você pedir.</li>
         <li class="reveal">Refatorou meio módulo <strong>"de brinde"</strong>.</li>
-        <li class="reveal">Inventou uma <strong>API que não existe</strong>.</li>
+        <li class="reveal"><strong>MLOps:</strong> promoveu um modelo pra <strong>produção</strong> sem validar as métricas.</li>
       </ul>
       <div class="reveal" style="margin-top:clamp(14px,2.2vh,22px); font-size:clamp(14px,1.8vw,20px); color:var(--text);">
         <strong style="color:var(--red);">Repetição é chato. Isto é perigoso.</strong><br>
@@ -787,8 +796,23 @@ SlideEngine.prototype.buildChrome = function() {
   });
   document.body.appendChild(dots); this.dots = [].slice.call(dots.children);
   var ctr = document.createElement('div'); ctr.className = 'deck-counter'; document.body.appendChild(ctr); this.counter = ctr;
-  var hints = document.createElement('div'); hints.className = 'deck-hints'; hints.textContent = '← → ou scroll para navegar'; document.body.appendChild(hints); this.hints = hints;
+  var hints = document.createElement('div'); hints.className = 'deck-hints'; hints.textContent = '← → ou scroll para navegar · F = tela cheia'; document.body.appendChild(hints); this.hints = hints;
   this.hintTimer = setTimeout(function() { hints.classList.add('faded'); }, 4000);
+  var fs = document.createElement('button'); fs.className = 'deck-fullscreen'; fs.type = 'button';
+  fs.setAttribute('aria-label', 'Tela cheia'); fs.title = 'Tela cheia (F)'; fs.textContent = '⛶';
+  fs.onclick = function() { self.toggleFullscreen(); }; document.body.appendChild(fs); this.fsBtn = fs;
+  document.addEventListener('fullscreenchange', function() {
+    fs.textContent = document.fullscreenElement ? '🗗' : '⛶';
+    fs.title = document.fullscreenElement ? 'Sair da tela cheia (F)' : 'Tela cheia (F)';
+  });
+};
+SlideEngine.prototype.toggleFullscreen = function() {
+  if (document.fullscreenElement) {
+    (document.exitFullscreen || document.webkitExitFullscreen || function(){}).call(document);
+  } else {
+    var el = document.documentElement;
+    (el.requestFullscreen || el.webkitRequestFullscreen || function(){}).call(el);
+  }
 };
 SlideEngine.prototype.bindEvents = function() {
   var self = this;
@@ -798,6 +822,7 @@ SlideEngine.prototype.bindEvents = function() {
     else if (['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key) > -1) { e.preventDefault(); self.prev(); }
     else if (e.key === 'Home') { e.preventDefault(); self.goTo(0); }
     else if (e.key === 'End') { e.preventDefault(); self.goTo(self.total-1); }
+    else if (e.key === 'f' || e.key === 'F') { e.preventDefault(); self.toggleFullscreen(); }
     self.fadeHints();
   });
   var tY;

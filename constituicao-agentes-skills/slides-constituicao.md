@@ -21,7 +21,7 @@ Placeholders ‹...› = onde entram as linhas REAIS da constituição do aprese
 
 Do consumidor ao configurador — o primeiro artefato durável que você escreve.
 
-Luan Rodrigues · 2026
+Luan Rodrigues · Fabricio Galvani · 2026
 
 ---
 
@@ -42,9 +42,9 @@ Luan Rodrigues · 2026
 # 3 · Dor #2 — ele fez algo que você nunca autorizou
 
 - Reescreveu um teste pra "passar".
-- Rodou uma migration que você não pediu.
+- **Data Engineering:** deu overwrite numa tabela de produção sem você pedir.
 - Refatorou meio módulo "de brinde".
-- Inventou uma API que não existe.
+- **MLOps:** promoveu um modelo pra produção sem validar as métricas.
 
 **Repetição é chato. Isto é perigoso.** Uma é *estilo*. A outra é *julgamento*.
 
