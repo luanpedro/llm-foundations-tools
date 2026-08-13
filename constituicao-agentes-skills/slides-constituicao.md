@@ -10,7 +10,7 @@ duracao_alvo: "15–20 min"
 Spec da apresentação. Vocabulário canônico e decisões em CONTEXT.md.
 Estilo visual: reaproveitar o tema dark "Terminal Mono" de
 ia-foundations-tools/apresentacao-2.html (JetBrains Mono, accent verde #50fa7b,
-scroll-snap por slide, .reveal). 12 slides + 1 demo ao vivo.
+scroll-snap por slide, .reveal). 13 slides (inclui demo ao vivo).
 Placeholders ‹...› = onde entram as linhas REAIS da constituição do apresentador
 (que não está nesta máquina). Nada inventado deve passar por "regra real".
 -->
@@ -128,16 +128,35 @@ O **conceito** é o mesmo em todo lugar. Muda só o **arquivo canônico**.
 
 ---
 
-# 9 · Da constituição às skills — o mesmo instinto
+# 9 · Dois momentos que se somam (não um vs o outro)
 
-- **Constituição** = escrevi uma vez o que nunca muda.
-- **Skill** = escrevi uma vez o procedimento que eu repito.
+Não é um OU o outro — a constituição **soma** com a skill. São dois momentos apartados:
 
-**Mesmo gesto:** parar de digitar de novo → escrever num lugar que a IA sempre respeita.
+- **Momento 1 · sempre — Constituição** = escrevi uma vez o que nunca muda. Governa o julgamento, sempre ligada.
+- **Momento 2 · sob demanda — Skill** = escrevi uma vez o procedimento que eu repito. Carrega só quando a tarefa pede.
 
-> Se você escreveu a constituição, você já sabe fazer sua primeira skill.
+**Mesmo instinto:** parar de digitar de novo → escrever num lugar que a IA sempre respeita. Primeiro a constituição; **depois** a primeira skill.
 
-<!-- Ponte, não seção. A demo (slide 10) mostra skill na prática — não ensinamos aqui. -->
+---
+
+# 9b · O que é uma skill?
+
+Uma pasta com um `SKILL.md`: um **procedimento repetível** que a IA carrega **sob demanda** — só quando a *description* casa com o que você pediu.
+
+```
+.claude/skills/
+  nova-feature/
+    SKILL.md        # name + description → vão pro contexto
+    references/     # docs de apoio (carregam se preciso)
+    templates/      # scaffolds do seu procedimento
+    scripts/        # passos automatizáveis
+```
+
+- **Barato:** só o *name* + *description* ficam no contexto; o corpo carrega quando ativa.
+- **Sob demanda:** diferente da constituição (sempre ligada), a skill só entra quando a tarefa pede.
+- **É seu procedimento:** aquilo que você faz do mesmo jeito toda vez, escrito uma vez só.
+
+<!-- A demo (slide 10) mostra a skill em ação; aqui damos a definição mínima. -->
 
 ---
 
