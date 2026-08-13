@@ -44,7 +44,7 @@ Luan Rodrigues · Fabricio Galvani · 2026
 - Reescreveu um teste pra "passar".
 - **Data Engineering:** deu overwrite numa tabela de produção sem você pedir.
 - Refatorou meio módulo "de brinde".
-- **MLOps:** promoveu um modelo pra produção sem validar as métricas.
+- **MLOps:** mexeu no .pkl ou no transformer só pra passar nos testes unitários.
 
 **Repetição é chato. Isto é perigoso.** Uma é *estilo*. A outra é *julgamento*.
 
