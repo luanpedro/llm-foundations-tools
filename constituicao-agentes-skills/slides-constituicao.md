@@ -29,8 +29,8 @@ Luan Rodrigues · Fabricio Galvani · 2026
 
 ![Constituição da República Federativa do Brasil](constituicao-brasil.jpg)
 
-Todo mundo aqui conhece **esta** constituição.
-Hoje eu quero falar da que governa os seus **agentes de IA**.
+Já que é **ano de eleição**, achei bacana revisarmos juntos a constituição — aquela que, *claro*, todo mundo aqui já leu de capa a capa.
+… agora, sobre a que governa os seus **agentes de IA**:
 
 <!-- Primeira fala, LOGO APÓS o título; depois seguimos pro conteúdo.
      No HTML a imagem vai embutida como data URI (deck self-contained). -->
