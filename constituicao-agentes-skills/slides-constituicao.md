@@ -41,7 +41,7 @@ Luan Rodrigues · Fabricio Galvani · 2026
 
 # 3 · Dor #2 — ele fez algo que você nunca autorizou
 
-- Reescreveu um teste pra "passar".
+- Deu commit e push sem pedir.
 - **Data Engineering:** mudou a tipagem de um campo sem a mudança ter sido especificada, só pelo próprio julgamento.
 - Refatorou meio módulo "de brinde".
 - **MLOps:** mexeu no .pkl ou no transformer só pra passar nos testes unitários.
