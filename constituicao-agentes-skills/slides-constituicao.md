@@ -10,10 +10,22 @@ duracao_alvo: "15–20 min"
 Spec da apresentação. Vocabulário canônico e decisões em CONTEXT.md.
 Estilo visual: reaproveitar o tema dark "Terminal Mono" de
 ia-foundations-tools/apresentacao-2.html (JetBrains Mono, accent verde #50fa7b,
-scroll-snap por slide, .reveal). 13 slides (inclui demo ao vivo).
+scroll-snap por slide, .reveal). 14 slides (slide 0 de abertura + demo ao vivo).
 Placeholders ‹...› = onde entram as linhas REAIS da constituição do apresentador
 (que não está nesta máquina). Nada inventado deve passar por "regra real".
 -->
+
+# 0 · Abertura — quebra-gelo
+
+![Constituição da República Federativa do Brasil](constituicao-brasil.jpg)
+
+Todo mundo aqui conhece **esta** constituição.
+Hoje eu quero falar da que governa os seus **agentes de IA**.
+
+<!-- Slide de abertura descontraído, antes do título. No HTML a imagem vai
+     embutida como data URI (deck self-contained). -->
+
+---
 
 # 1 · Título
 
