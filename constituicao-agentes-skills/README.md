@@ -8,8 +8,9 @@ de IA — e a ponte natural para as *skills*.
 
 | Arquivo | O que é |
 |---------|---------|
-| [`apresentacao-constituicao.html`](apresentacao-constituicao.html) | Deck final, self-contained, tema dark "Terminal Mono". Abra no navegador; navegue por setas/scroll/click. |
-| [`slides-constituicao.md`](slides-constituicao.md) | Spec de conteúdo (fonte da verdade) dos 12 slides + demo ao vivo. |
+| [`apresentacao-constituicao.html`](apresentacao-constituicao.html) | Deck final v1, self-contained, tema dark "Terminal Mono" (verde/mono). Abra no navegador; navegue por setas/scroll/click. |
+| [`apresentacao-constituicao-v2.html`](apresentacao-constituicao-v2.html) | Mesma palestra, identidade visual azul-noite/violeta (fonte Inter), reusando o tema de `ia-foundations-tools/apresentacao.html`. Navegação por setas/clique lateral; `F` = tela cheia. |
+| [`slides-constituicao.md`](slides-constituicao.md) | Spec de conteúdo (fonte da verdade) dos 14 slides + demo ao vivo. Serve às duas versões HTML. |
 | [`CONTEXT.md`](CONTEXT.md) | Glossário / decisões de design da palestra (vocabulário canônico, as 5 categorias de princípios, framing, CTA). |
 
 ## Ideia central
